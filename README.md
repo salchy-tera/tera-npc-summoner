@@ -3,7 +3,7 @@ Summon any npc/merchant from anywhere.
 
 Commands: 
 
--sum -> to pop up a menu with the different nps to summons
+-sum -> to pop up a menu with the different nps to summon
 
 -sum bank -> summon bank
 
