@@ -1,4 +1,5 @@
 module.exports = function SalchySummonerMaster(script) {	
+	///
 	const path = require('path');
 	const fs = require('fs');
 	let config = {};
