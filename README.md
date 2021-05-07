@@ -1,5 +1,5 @@
 # tera-npc-summoner
-07/05/2021 -> update -> auto update and save config file with new IDs when they change due to new patches. Whenever there is a new patch, just go to Highwatch and the IDs will autoupdate. You just need to do this ONCE every new patch.  ENJOY
+07/05/2021 -> update -> auto update and save config file with new IDs whenever they change due to new patches. Whenever there is a new patch, just go to Highwatch and the IDs will autoupdate. You just need to do this ONCE every new patch.  ENJOY
 
 
 
