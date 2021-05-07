@@ -1,20 +1,85 @@
 module.exports = function SalchySummonerMaster(script) {	
 	const path = require('path');
-	let config= reloadModule('./config.js');
-	let hw_zone = config[0].hw_zone;
-	let merchant_template = config[0].merchant_template;
-	let npc_da = config[0].npc_da;
-	let merchant_id = config[0].merchant_id;
+	const fs = require('fs');
+	let config = {};
+	let settingTimeout = null;	
 	let npcId;
 	let zoned = false;
 	let type;
 	let value;
-	let vg_id = config[0].vg_id;
-	let vg_template = config[0].vg_template;
-	let sp_id = config[0].sp_id;
-	let sp_template = config[0].sp_template;
 	script.dispatch.addDefinition('C_REQUEST_CONTRACT', 50, path.join(__dirname, 'C_REQUEST_CONTRACT.50.def'));
-	const summons = [
+	try { config = require('./config.json'); }
+	catch (e) {
+		config = {};
+		settingUpdate();
+	}
+
+	function settingUpdate() {
+		clearTimeout(settingTimeout);
+		settingTimeout = setTimeout(settingSave,1000);
+	}	
+	function settingSave() {
+		fs.writeFile(path.join(__dirname, 'config.json'), JSON.stringify(config, undefined, '\t'), err => {
+		});
+	}
+	let hw_zone = 7031
+	if (("hw_zone" in config)) {
+		hw_zone = config.hw_zone;
+	}
+	if (!("hw_zone" in config)) {
+		config.hw_zone = 7031;
+		settingUpdate();
+	}
+	let merchant_template = 2019
+	if (("merchant_template" in config)) {
+		merchant_template = config.merchant_template;
+	}
+	if (!("merchant_template" in config)) {
+		config.merchant_template = 2019;
+		settingUpdate();
+	}
+	let merchant_id = 3518437209224331
+	if (("merchant_id" in config)) {
+		merchant_id = config.merchant_id;
+	}
+	if (!("merchant_id" in config)) {
+		config.merchant_id = 3518437209224331;
+		settingUpdate();
+	}
+	let vg_template = 2058
+	if (("vg_template" in config)) {
+		vg_template = config.vg_template;
+	}
+	if (!("vg_template" in config)) {
+		config.vg_template = 2058;
+		settingUpdate();
+	}
+	let vg_id = 3518437209189246
+	if (("vg_id" in config)) {
+		vg_id = config.vg_id;
+	}
+	if (!("vg_id" in config)) {
+		config.vg_id = 3518437209189246;
+		settingUpdate();
+	}
+	let sp_template = 2109
+	if (("sp_template" in config)) {
+		sp_template = config.sp_template;
+	}
+	if (!("sp_template" in config)) {
+		config.sp_template = 2109;
+		settingUpdate();
+	}
+	let sp_id = 3518437209205338
+	if (("sp_id" in config)) {
+		sp_id = config.sp_id;
+	}
+	if (!("sp_id" in config)) {
+		config.sp_id = 3518437209205338;
+		settingUpdate();
+	}	
+	
+	let summons = [
 		{
 			"name": "bank",
 			"type": 26,
@@ -108,21 +173,6 @@ module.exports = function SalchySummonerMaster(script) {
     function getSum(arg) {
         return summons.find((e) => e.name.toLowerCase().includes(arg));
     }	
-	
-
-	script.command.add("sumrel", (arg1) => {
-		config= reloadModule('./config.js');
-		hw_zone = config[0].hw_zone;
-		merchant_template = config[0].merchant_template;					
-		npc_da = config[0].npc_da;					
-		merchant_id = config[0].merchant_id;	
-		vg_id = config[0].vg_id;
-		vg_template = config[0].vg_template;	
-		sp_id = config[0].sp_id;
-		sp_template = config[0].sp_template;		
-		script.command.message('Summon Script configuration reloaded');
-	});	
-
 
 	script.hook('S_LOAD_TOPO', 3, packet => {
 
@@ -138,26 +188,30 @@ module.exports = function SalchySummonerMaster(script) {
 			switch (packet.templateId) {
 			case merchant_template:
 				merchant_id = packet.gameId;
-				console.log("Merchant NPC identified: ", merchant_id);
+				config.merchant_id = Number(merchant_id);
+				summons[1].npcId = merchant_id
+				settingUpdate();				
+				console.log("Merchant NPC identified, config updated: ", merchant_id);
 				break;
 			case vg_template:
 				vg_id = packet.gameId;
+				config.vg_id = Number(vg_id);
+				summons[2].npcId = vg_id
+				settingUpdate();				
+				console.log("Merchant NPC identified, config updated: ", merchant_id);				
 				console.log("VG NPC identified: ", vg_id);
 				break;	
 			case sp_template:
 				sp_id = packet.gameId;
-				console.log("SP NPC identified: ", sp_id);
+				config.sp_id = Number(sp_id);
+				summons[3].npcId = sp_id
+				settingUpdate();				
+				console.log("SP NPC identified, config updated: ", sp_id);
 				break;				
 			default:
 				break;
 			}
 		}
-	});		
-	
-	function reloadModule(mod_to_reload){
-		delete require.cache[require.resolve(mod_to_reload)]
-		console.log('Summon Script: Reloading ' + mod_to_reload + "...");
-		return require(mod_to_reload)
-	}	
+	});			
 	
 }
